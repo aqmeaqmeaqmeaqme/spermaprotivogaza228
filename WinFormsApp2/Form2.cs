@@ -48,7 +48,7 @@ namespace WinFormsApp2
 
         private void button3_Click(object sender, EventArgs e)
         {
-            // Дополнительный код для кнопки 3 (если необходимо)
+            // кнопка тре
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
