@@ -26,11 +26,8 @@ public class UserForm : Form
         progressBtn.Click += (_, _) => ShowProgress();
         var exerciseProgressBtn = new Button { Text = "Прогресс упражнения", Width = 180 };
         exerciseProgressBtn.Click += (_, _) => ShowExerciseProgress();
-        var registerBtn = new Button { Text = "Регистрация", Width = 180 };
-        registerBtn.Click += (_, _) => OpenRegister();
-
         var panel = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 60 };
-        panel.Controls.AddRange(new Control[] { addWorkoutBtn, delWorkoutBtn, addExerciseBtn, progressBtn, _exerciseFilter, exerciseProgressBtn, registerBtn });
+        panel.Controls.AddRange(new Control[] { addWorkoutBtn, delWorkoutBtn, addExerciseBtn, progressBtn, _exerciseFilter, exerciseProgressBtn });
 
         Controls.Add(_grid);
         Controls.Add(panel);
@@ -111,12 +108,6 @@ public class UserForm : Form
 
         var exerciseId = Convert.ToInt32(_exerciseFilter.SelectedValue);
         _grid.DataSource = DatabaseHelper.GetExerciseProgress(_userId, exerciseId);
-    }
-
-    private void OpenRegister()
-    {
-        using var form = new RegisterForm();
-        form.ShowDialog();
     }
 
     private void LoadExercisesFilter()

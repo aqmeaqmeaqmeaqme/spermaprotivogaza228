@@ -17,7 +17,7 @@ public class UserEditForm : Form
     public UserEditForm()
     {
         Text = "Добавить пользователя";
-        _role.Items.AddRange(new[] { "User", "Admin" });
+        _role.Items.AddRange(new[] { "User", "Trainer", "Admin" });
         _role.SelectedIndex = 0;
         var ok = new Button { Text = "Сохранить", Width = 250 };
         ok.Click += (_, _) => DialogResult = DialogResult.OK;

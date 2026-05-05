@@ -4,20 +4,23 @@ namespace WinFormsApp2.Forms;
 
 public class RegisterForm : Form
 {
+    private readonly string? _forcedRole;
     private readonly TextBox _login = new() { Width = 250, PlaceholderText = "Логин" };
     private readonly TextBox _password = new() { Width = 250, PlaceholderText = "Пароль", UseSystemPasswordChar = true };
     private readonly ComboBox _role = new() { Width = 250, DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly ComboBox _deviceType = new() { Width = 250, DropDownStyle = ComboBoxStyle.DropDownList };
 
-    public RegisterForm()
+    public RegisterForm(string? forcedRole = null)
     {
+        _forcedRole = forcedRole;
         Text = "Регистрация";
         Width = 360;
         Height = 360;
         StartPosition = FormStartPosition.CenterParent;
 
-        _role.Items.Add("User");
-        _role.SelectedIndex = 0;
+        _role.Items.AddRange(new[] { "User", "Trainer" });
+        _role.SelectedItem = forcedRole == "Trainer" ? "Trainer" : "User";
+        _role.Enabled = forcedRole is null;
 
         _deviceType.Items.AddRange(new[] { "Android", "iOS", "ПК" });
         _deviceType.SelectedIndex = 0;

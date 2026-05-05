@@ -5,7 +5,7 @@ CREATE TABLE Users (
     Name TEXT NOT NULL,
     Email TEXT NOT NULL UNIQUE,
     Password TEXT NOT NULL,
-    Role TEXT NOT NULL CHECK(Role IN ('Admin','User'))
+    Role TEXT NOT NULL CHECK(Role IN ('Admin','User','Trainer'))
 );
 
 CREATE TABLE Workouts (

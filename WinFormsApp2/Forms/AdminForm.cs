@@ -17,9 +17,11 @@ public class AdminForm : Form
         addBtn.Click += (_, _) => AddUser();
         var delBtn = new Button { Text = "Удалить пользователя", Width = 180 };
         delBtn.Click += (_, _) => DeleteUser();
+        var registerTrainerBtn = new Button { Text = "Регистрация тренера", Width = 180 };
+        registerTrainerBtn.Click += (_, _) => RegisterTrainer();
 
         var panel = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 50 };
-        panel.Controls.AddRange(new Control[] { addBtn, delBtn });
+        panel.Controls.AddRange(new Control[] { addBtn, delBtn, registerTrainerBtn });
 
         Controls.Add(_grid);
         Controls.Add(panel);
@@ -47,6 +49,15 @@ public class AdminForm : Form
         if (MessageBox.Show("Удалить пользователя?", "Подтверждение", MessageBoxButtons.YesNo) == DialogResult.Yes)
         {
             DatabaseHelper.ExecuteNonQuery("DELETE FROM Users WHERE Id=@id", new SqliteParameter("@id", id));
+            LoadUsers();
+        }
+    }
+
+    private void RegisterTrainer()
+    {
+        using var form = new RegisterForm("Trainer");
+        if (form.ShowDialog() == DialogResult.OK)
+        {
             LoadUsers();
         }
     }

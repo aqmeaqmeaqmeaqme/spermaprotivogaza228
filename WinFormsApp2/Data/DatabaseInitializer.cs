@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS Users (
     Name TEXT NOT NULL,
     Email TEXT NOT NULL UNIQUE,
     Password TEXT NOT NULL,
-    Role TEXT NOT NULL CHECK(Role IN ('Admin','User'))
+    Role TEXT NOT NULL CHECK(Role IN ('Admin','User','Trainer'))
 );
 CREATE TABLE IF NOT EXISTS Workouts (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,

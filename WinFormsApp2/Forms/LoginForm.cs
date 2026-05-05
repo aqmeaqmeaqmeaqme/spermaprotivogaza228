@@ -11,8 +11,11 @@ public class LoginForm : Form
     public LoginForm()
     {
         Text = "Вход";
-        Width = 350;
-        Height = 220;
+        Width = 380;
+        Height = 320;
+        MinimumSize = new Size(380, 320);
+        FormBorderStyle = FormBorderStyle.FixedDialog;
+        MaximizeBox = false;
         StartPosition = FormStartPosition.CenterScreen;
 
         var loginButton = new Button { Text = "Войти", Width = 250, Height = 35 };
