@@ -17,9 +17,15 @@ public class LoginForm : Form
 
         var loginButton = new Button { Text = "Войти", Width = 250, Height = 35 };
         loginButton.Click += LoginButton_Click;
+        var registerButton = new Button { Text = "Регистрация", Width = 250, Height = 35 };
+        registerButton.Click += (_, _) =>
+        {
+            using var registerForm = new RegisterForm();
+            registerForm.ShowDialog();
+        };
 
         var layout = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown, Padding = new Padding(30), AutoScroll = true };
-        layout.Controls.AddRange(new Control[] { new Label { Text = "Email" }, _email, new Label { Text = "Пароль" }, _password, loginButton });
+        layout.Controls.AddRange(new Control[] { new Label { Text = "Email" }, _email, new Label { Text = "Пароль" }, _password, loginButton, registerButton });
         Controls.Add(layout);
     }
 

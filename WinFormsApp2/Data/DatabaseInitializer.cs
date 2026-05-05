@@ -50,6 +50,13 @@ CREATE TABLE IF NOT EXISTS Progress (
     Weight REAL NOT NULL,
     FOREIGN KEY(UserId) REFERENCES Users(Id) ON DELETE CASCADE
 );
+CREATE TABLE IF NOT EXISTS Devices (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    UserId INTEGER NOT NULL,
+    Type TEXT NOT NULL CHECK(Type IN ('Android','iOS','ПК')),
+    Model TEXT NOT NULL,
+    FOREIGN KEY(UserId) REFERENCES Users(Id) ON DELETE CASCADE
+);
 ";
         DatabaseHelper.ExecuteNonQuery(sql);
     }
