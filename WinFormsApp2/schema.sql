@@ -3,9 +3,9 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE Users (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     Name TEXT NOT NULL,
-    Email TEXT NOT NULL UNIQUE,
+    Login TEXT NOT NULL UNIQUE,
     Password TEXT NOT NULL,
-    Role TEXT NOT NULL CHECK(Role IN ('Admin','User'))
+    Role TEXT NOT NULL CHECK(Role IN ('Admin','User','Trainer'))
 );
 
 CREATE TABLE Workouts (
@@ -38,5 +38,13 @@ CREATE TABLE Progress (
     UserId INTEGER NOT NULL,
     Date TEXT NOT NULL,
     Weight REAL NOT NULL,
+    FOREIGN KEY(UserId) REFERENCES Users(Id) ON DELETE CASCADE
+);
+
+CREATE TABLE Devices (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    UserId INTEGER NOT NULL,
+    Type TEXT NOT NULL CHECK(Type IN ('Android','iOS','ПК')),
+    Model TEXT NOT NULL,
     FOREIGN KEY(UserId) REFERENCES Users(Id) ON DELETE CASCADE
 );

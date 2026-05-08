@@ -6,6 +6,7 @@ namespace WinFormsApp2.Forms;
 public class UserForm : Form
 {
     private readonly int _userId;
+    private readonly ComboBox _exerciseFilter = new() { Width = 220, DropDownStyle = ComboBoxStyle.DropDownList };
     private readonly DataGridView _grid = new() { Dock = DockStyle.Top, Height = 280, ReadOnly = true, AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill };
 
     public UserForm(int userId, string userName)
@@ -23,19 +24,24 @@ public class UserForm : Form
         addExerciseBtn.Click += (_, _) => AddExerciseLog();
         var progressBtn = new Button { Text = "Показать прогресс", Width = 180 };
         progressBtn.Click += (_, _) => ShowProgress();
-
+        var exerciseProgressBtn = new Button { Text = "Прогресс упражнения", Width = 180 };
+        exerciseProgressBtn.Click += (_, _) => ShowExerciseProgress();
         var panel = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 60 };
-        panel.Controls.AddRange(new Control[] { addWorkoutBtn, delWorkoutBtn, addExerciseBtn, progressBtn });
+        panel.Controls.AddRange(new Control[] { addWorkoutBtn, delWorkoutBtn, addExerciseBtn, progressBtn, _exerciseFilter, exerciseProgressBtn });
 
         Controls.Add(_grid);
         Controls.Add(panel);
-        Load += (_, _) => LoadWorkouts();
+        Load += (_, _) =>
+        {
+            LoadWorkouts();
+            LoadExercisesFilter();
+        };
     }
 
     private void LoadWorkouts()
     {
         _grid.DataSource = DatabaseHelper.GetDataTable(
-            "SELECT Id, Date, Duration FROM Workouts WHERE UserId=@uid ORDER BY Date DESC",
+            "SELECT Id AS 'Код', Date AS 'Дата', Duration AS 'Длительность (мин)' FROM Workouts WHERE UserId=@uid ORDER BY Date DESC",
             new SqliteParameter("@uid", _userId));
     }
 
@@ -81,6 +87,7 @@ public class UserForm : Form
             DatabaseHelper.ExecuteNonQuery("INSERT INTO ExerciseLogs(WorkoutId,ExerciseId,Sets,Reps,Weight) VALUES(@w,@e,@s,@r,@we)",
                 new SqliteParameter("@w", workoutId), new SqliteParameter("@e", exerciseId),
                 new SqliteParameter("@s", form.Sets), new SqliteParameter("@r", form.Reps), new SqliteParameter("@we", form.Weight));
+            LoadExercisesFilter();
             MessageBox.Show("Упражнение добавлено");
         }
     }
@@ -89,5 +96,25 @@ public class UserForm : Form
     {
         using var form = new ProgressForm(_userId);
         form.ShowDialog();
+    }
+
+    private void ShowExerciseProgress()
+    {
+        if (_exerciseFilter.SelectedValue == null)
+        {
+            MessageBox.Show("Нет упражнений для отображения прогресса");
+            return;
+        }
+
+        var exerciseId = Convert.ToInt32(_exerciseFilter.SelectedValue);
+        _grid.DataSource = DatabaseHelper.GetExerciseProgress(_userId, exerciseId);
+    }
+
+    private void LoadExercisesFilter()
+    {
+        var dt = DatabaseHelper.GetUserExercises(_userId);
+        _exerciseFilter.DataSource = dt;
+        _exerciseFilter.DisplayMember = "Название";
+        _exerciseFilter.ValueMember = "Id";
     }
 }

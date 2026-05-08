@@ -5,21 +5,30 @@ namespace WinFormsApp2.Forms;
 
 public class LoginForm : Form
 {
-    private readonly TextBox _email = new() { PlaceholderText = "Email", Width = 250 };
+    private readonly TextBox _login = new() { PlaceholderText = "Логин", Width = 250 };
     private readonly TextBox _password = new() { PlaceholderText = "Пароль", Width = 250, UseSystemPasswordChar = true };
 
     public LoginForm()
     {
         Text = "Вход";
-        Width = 350;
-        Height = 220;
+        Width = 380;
+        Height = 320;
+        MinimumSize = new Size(380, 320);
+        FormBorderStyle = FormBorderStyle.FixedDialog;
+        MaximizeBox = false;
         StartPosition = FormStartPosition.CenterScreen;
 
         var loginButton = new Button { Text = "Войти", Width = 250, Height = 35 };
         loginButton.Click += LoginButton_Click;
+        var registerButton = new Button { Text = "Регистрация", Width = 250, Height = 35 };
+        registerButton.Click += (_, _) =>
+        {
+            using var registerForm = new RegisterForm();
+            registerForm.ShowDialog();
+        };
 
         var layout = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown, Padding = new Padding(30), AutoScroll = true };
-        layout.Controls.AddRange(new Control[] { new Label { Text = "Email" }, _email, new Label { Text = "Пароль" }, _password, loginButton });
+        layout.Controls.AddRange(new Control[] { new Label { Text = "Логин" }, _login, new Label { Text = "Пароль" }, _password, loginButton, registerButton });
         Controls.Add(layout);
     }
 
@@ -28,8 +37,8 @@ public class LoginForm : Form
         try
         {
             using var reader = DatabaseHelper.ExecuteReader(
-                "SELECT Id, Name, Role FROM Users WHERE Email=@email AND Password=@password",
-                new SqliteParameter("@email", _email.Text.Trim()),
+                "SELECT Id, Name, Role FROM Users WHERE Login=@login AND Password=@password",
+                new SqliteParameter("@login", _login.Text.Trim()),
                 new SqliteParameter("@password", _password.Text.Trim()));
 
             if (!reader.Read())

@@ -42,4 +42,52 @@ public static class DatabaseHelper
         dt.Load(reader);
         return dt;
     }
+
+    public static int CreateUser(string login, string password, string role = "User")
+    {
+        using var connection = new SqliteConnection(ConnectionString);
+        connection.Open();
+        using var command = new SqliteCommand(
+            "INSERT INTO Users(Name,Login,Password,Role) VALUES(@name,@login,@password,@role); SELECT last_insert_rowid();",
+            connection);
+        command.Parameters.AddWithValue("@name", login);
+        command.Parameters.AddWithValue("@login", login);
+        command.Parameters.AddWithValue("@password", password);
+        command.Parameters.AddWithValue("@role", role);
+        return Convert.ToInt32(command.ExecuteScalar());
+    }
+
+    public static void CreateDevice(int userId, string type, string model = "Не указано")
+    {
+        ExecuteNonQuery(
+            "INSERT INTO Devices(UserId,Type,Model) VALUES(@userId,@type,@model)",
+            new SqliteParameter("@userId", userId),
+            new SqliteParameter("@type", type),
+            new SqliteParameter("@model", model));
+    }
+
+    public static DataTable GetExerciseProgress(int userId, int exerciseId)
+    {
+        return GetDataTable(@"
+SELECT w.Date AS 'Дата', e.Name AS 'Упражнение', l.Sets AS 'Подходы', l.Reps AS 'Повторения', l.Weight AS 'Вес (кг)'
+FROM ExerciseLogs l
+JOIN Workouts w ON w.Id = l.WorkoutId
+JOIN Exercises e ON e.Id = l.ExerciseId
+WHERE w.UserId = @uid AND l.ExerciseId = @eid
+ORDER BY w.Date DESC",
+            new SqliteParameter("@uid", userId),
+            new SqliteParameter("@eid", exerciseId));
+    }
+
+    public static DataTable GetUserExercises(int userId)
+    {
+        return GetDataTable(@"
+SELECT DISTINCT e.Id, e.Name AS 'Название'
+FROM Exercises e
+JOIN ExerciseLogs l ON l.ExerciseId = e.Id
+JOIN Workouts w ON w.Id = l.WorkoutId
+WHERE w.UserId = @uid
+ORDER BY e.Name",
+            new SqliteParameter("@uid", userId));
+    }
 }

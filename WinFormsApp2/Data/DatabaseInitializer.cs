@@ -17,9 +17,9 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE IF NOT EXISTS Users (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     Name TEXT NOT NULL,
-    Email TEXT NOT NULL UNIQUE,
+    Login TEXT NOT NULL UNIQUE,
     Password TEXT NOT NULL,
-    Role TEXT NOT NULL CHECK(Role IN ('Admin','User'))
+    Role TEXT NOT NULL CHECK(Role IN ('Admin','User','Trainer'))
 );
 CREATE TABLE IF NOT EXISTS Workouts (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -50,15 +50,22 @@ CREATE TABLE IF NOT EXISTS Progress (
     Weight REAL NOT NULL,
     FOREIGN KEY(UserId) REFERENCES Users(Id) ON DELETE CASCADE
 );
+CREATE TABLE IF NOT EXISTS Devices (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    UserId INTEGER NOT NULL,
+    Type TEXT NOT NULL CHECK(Type IN ('Android','iOS','ПК')),
+    Model TEXT NOT NULL,
+    FOREIGN KEY(UserId) REFERENCES Users(Id) ON DELETE CASCADE
+);
 ";
         DatabaseHelper.ExecuteNonQuery(sql);
     }
 
     private static void SeedData()
     {
-        DatabaseHelper.ExecuteNonQuery(@"INSERT OR IGNORE INTO Users(Name,Email,Password,Role) VALUES
-('Администратор','admin@mail.com','1234','Admin'),
-('Пользователь','user@mail.com','1234','User');");
+        DatabaseHelper.ExecuteNonQuery(@"INSERT OR IGNORE INTO Users(Name,Login,Password,Role) VALUES
+('Администратор','admin','1234','Admin'),
+('Пользователь','user','1234','User');");
 
         DatabaseHelper.ExecuteNonQuery(@"INSERT OR IGNORE INTO Exercises(Name,MuscleGroup) VALUES
 ('Жим лежа','Грудь'),

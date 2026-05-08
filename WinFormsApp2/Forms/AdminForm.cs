@@ -17,24 +17,26 @@ public class AdminForm : Form
         addBtn.Click += (_, _) => AddUser();
         var delBtn = new Button { Text = "Удалить пользователя", Width = 180 };
         delBtn.Click += (_, _) => DeleteUser();
+        var registerTrainerBtn = new Button { Text = "Регистрация тренера", Width = 180 };
+        registerTrainerBtn.Click += (_, _) => RegisterTrainer();
 
         var panel = new FlowLayoutPanel { Dock = DockStyle.Bottom, Height = 50 };
-        panel.Controls.AddRange(new Control[] { addBtn, delBtn });
+        panel.Controls.AddRange(new Control[] { addBtn, delBtn, registerTrainerBtn });
 
         Controls.Add(_grid);
         Controls.Add(panel);
         Load += (_, _) => LoadUsers();
     }
 
-    private void LoadUsers() => _grid.DataSource = DatabaseHelper.GetDataTable("SELECT Id, Name, Email, Role FROM Users ORDER BY Id");
+    private void LoadUsers() => _grid.DataSource = DatabaseHelper.GetDataTable("SELECT Id AS 'Код', Name AS 'Имя', Login AS 'Логин', Role AS 'Роль' FROM Users ORDER BY Id");
 
     private void AddUser()
     {
         var form = new UserEditForm();
         if (form.ShowDialog() == DialogResult.OK)
         {
-            DatabaseHelper.ExecuteNonQuery("INSERT INTO Users(Name,Email,Password,Role) VALUES(@n,@e,@p,@r)",
-                new SqliteParameter("@n", form.UserName), new SqliteParameter("@e", form.Email),
+            DatabaseHelper.ExecuteNonQuery("INSERT INTO Users(Name,Login,Password,Role) VALUES(@n,@l,@p,@r)",
+                new SqliteParameter("@n", form.UserName), new SqliteParameter("@l", form.Login),
                 new SqliteParameter("@p", form.Password), new SqliteParameter("@r", form.Role));
             LoadUsers();
         }
@@ -47,6 +49,15 @@ public class AdminForm : Form
         if (MessageBox.Show("Удалить пользователя?", "Подтверждение", MessageBoxButtons.YesNo) == DialogResult.Yes)
         {
             DatabaseHelper.ExecuteNonQuery("DELETE FROM Users WHERE Id=@id", new SqliteParameter("@id", id));
+            LoadUsers();
+        }
+    }
+
+    private void RegisterTrainer()
+    {
+        using var form = new RegisterForm("Trainer");
+        if (form.ShowDialog() == DialogResult.OK)
+        {
             LoadUsers();
         }
     }
