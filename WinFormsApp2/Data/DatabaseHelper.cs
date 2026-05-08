@@ -48,10 +48,10 @@ public static class DatabaseHelper
         using var connection = new SqliteConnection(ConnectionString);
         connection.Open();
         using var command = new SqliteCommand(
-            "INSERT INTO Users(Name,Email,Password,Role) VALUES(@name,@email,@password,@role); SELECT last_insert_rowid();",
+            "INSERT INTO Users(Name,Login,Password,Role) VALUES(@name,@login,@password,@role); SELECT last_insert_rowid();",
             connection);
         command.Parameters.AddWithValue("@name", login);
-        command.Parameters.AddWithValue("@email", login);
+        command.Parameters.AddWithValue("@login", login);
         command.Parameters.AddWithValue("@password", password);
         command.Parameters.AddWithValue("@role", role);
         return Convert.ToInt32(command.ExecuteScalar());
@@ -69,7 +69,7 @@ public static class DatabaseHelper
     public static DataTable GetExerciseProgress(int userId, int exerciseId)
     {
         return GetDataTable(@"
-SELECT w.Date, e.Name AS Exercise, l.Sets, l.Reps, l.Weight
+SELECT w.Date AS 'Дата', e.Name AS 'Упражнение', l.Sets AS 'Подходы', l.Reps AS 'Повторения', l.Weight AS 'Вес (кг)'
 FROM ExerciseLogs l
 JOIN Workouts w ON w.Id = l.WorkoutId
 JOIN Exercises e ON e.Id = l.ExerciseId
@@ -82,7 +82,7 @@ ORDER BY w.Date DESC",
     public static DataTable GetUserExercises(int userId)
     {
         return GetDataTable(@"
-SELECT DISTINCT e.Id, e.Name
+SELECT DISTINCT e.Id, e.Name AS 'Название'
 FROM Exercises e
 JOIN ExerciseLogs l ON l.ExerciseId = e.Id
 JOIN Workouts w ON w.Id = l.WorkoutId

@@ -41,7 +41,7 @@ public class UserForm : Form
     private void LoadWorkouts()
     {
         _grid.DataSource = DatabaseHelper.GetDataTable(
-            "SELECT Id, Date, Duration FROM Workouts WHERE UserId=@uid ORDER BY Date DESC",
+            "SELECT Id AS 'Код', Date AS 'Дата', Duration AS 'Длительность (мин)' FROM Workouts WHERE UserId=@uid ORDER BY Date DESC",
             new SqliteParameter("@uid", _userId));
     }
 
@@ -114,7 +114,7 @@ public class UserForm : Form
     {
         var dt = DatabaseHelper.GetUserExercises(_userId);
         _exerciseFilter.DataSource = dt;
-        _exerciseFilter.DisplayMember = "Name";
+        _exerciseFilter.DisplayMember = "Название";
         _exerciseFilter.ValueMember = "Id";
     }
 }

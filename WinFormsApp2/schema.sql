@@ -3,7 +3,7 @@ PRAGMA foreign_keys = ON;
 CREATE TABLE Users (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,
     Name TEXT NOT NULL,
-    Email TEXT NOT NULL UNIQUE,
+    Login TEXT NOT NULL UNIQUE,
     Password TEXT NOT NULL,
     Role TEXT NOT NULL CHECK(Role IN ('Admin','User','Trainer'))
 );

@@ -5,7 +5,7 @@ namespace WinFormsApp2.Forms;
 
 public class LoginForm : Form
 {
-    private readonly TextBox _email = new() { PlaceholderText = "Email", Width = 250 };
+    private readonly TextBox _login = new() { PlaceholderText = "Логин", Width = 250 };
     private readonly TextBox _password = new() { PlaceholderText = "Пароль", Width = 250, UseSystemPasswordChar = true };
 
     public LoginForm()
@@ -28,7 +28,7 @@ public class LoginForm : Form
         };
 
         var layout = new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown, Padding = new Padding(30), AutoScroll = true };
-        layout.Controls.AddRange(new Control[] { new Label { Text = "Email" }, _email, new Label { Text = "Пароль" }, _password, loginButton, registerButton });
+        layout.Controls.AddRange(new Control[] { new Label { Text = "Логин" }, _login, new Label { Text = "Пароль" }, _password, loginButton, registerButton });
         Controls.Add(layout);
     }
 
@@ -37,8 +37,8 @@ public class LoginForm : Form
         try
         {
             using var reader = DatabaseHelper.ExecuteReader(
-                "SELECT Id, Name, Role FROM Users WHERE Email=@email AND Password=@password",
-                new SqliteParameter("@email", _email.Text.Trim()),
+                "SELECT Id, Name, Role FROM Users WHERE Login=@login AND Password=@password",
+                new SqliteParameter("@login", _login.Text.Trim()),
                 new SqliteParameter("@password", _password.Text.Trim()));
 
             if (!reader.Read())

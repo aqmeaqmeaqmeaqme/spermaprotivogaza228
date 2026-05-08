@@ -28,15 +28,15 @@ public class AdminForm : Form
         Load += (_, _) => LoadUsers();
     }
 
-    private void LoadUsers() => _grid.DataSource = DatabaseHelper.GetDataTable("SELECT Id, Name, Email, Role FROM Users ORDER BY Id");
+    private void LoadUsers() => _grid.DataSource = DatabaseHelper.GetDataTable("SELECT Id AS 'Код', Name AS 'Имя', Login AS 'Логин', Role AS 'Роль' FROM Users ORDER BY Id");
 
     private void AddUser()
     {
         var form = new UserEditForm();
         if (form.ShowDialog() == DialogResult.OK)
         {
-            DatabaseHelper.ExecuteNonQuery("INSERT INTO Users(Name,Email,Password,Role) VALUES(@n,@e,@p,@r)",
-                new SqliteParameter("@n", form.UserName), new SqliteParameter("@e", form.Email),
+            DatabaseHelper.ExecuteNonQuery("INSERT INTO Users(Name,Login,Password,Role) VALUES(@n,@l,@p,@r)",
+                new SqliteParameter("@n", form.UserName), new SqliteParameter("@l", form.Login),
                 new SqliteParameter("@p", form.Password), new SqliteParameter("@r", form.Role));
             LoadUsers();
         }

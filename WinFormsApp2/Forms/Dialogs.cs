@@ -5,12 +5,12 @@ namespace WinFormsApp2.Forms;
 public class UserEditForm : Form
 {
     private readonly TextBox _name = new() { Width = 250 };
-    private readonly TextBox _email = new() { Width = 250 };
+    private readonly TextBox _login = new() { Width = 250 };
     private readonly TextBox _password = new() { Width = 250 };
     private readonly ComboBox _role = new() { Width = 250, DropDownStyle = ComboBoxStyle.DropDownList };
 
     public string UserName => _name.Text.Trim();
-    public string Email => _email.Text.Trim();
+    public string Login => _login.Text.Trim();
     public string Password => _password.Text.Trim();
     public string Role => _role.SelectedItem?.ToString() ?? "User";
 
@@ -21,7 +21,7 @@ public class UserEditForm : Form
         _role.SelectedIndex = 0;
         var ok = new Button { Text = "Сохранить", Width = 250 };
         ok.Click += (_, _) => DialogResult = DialogResult.OK;
-        Controls.Add(new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown, Padding = new Padding(20), Controls = { new Label { Text = "Имя" }, _name, new Label { Text = "Email" }, _email, new Label { Text = "Пароль" }, _password, new Label { Text = "Роль" }, _role, ok } });
+        Controls.Add(new FlowLayoutPanel { Dock = DockStyle.Fill, FlowDirection = FlowDirection.TopDown, Padding = new Padding(20), Controls = { new Label { Text = "Имя" }, _name, new Label { Text = "Логин" }, _login, new Label { Text = "Пароль" }, _password, new Label { Text = "Роль" }, _role, ok } });
         Width = 330; Height = 320;
     }
 }
@@ -75,7 +75,7 @@ public class ProgressForm : Form
         Text = "Прогресс веса";
         Width = 500; Height = 350;
         var grid = new DataGridView { Dock = DockStyle.Fill, ReadOnly = true, AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill };
-        grid.DataSource = DatabaseHelper.GetDataTable("SELECT Date, Weight FROM Progress WHERE UserId=@u ORDER BY Date DESC", new Microsoft.Data.Sqlite.SqliteParameter("@u", userId));
+        grid.DataSource = DatabaseHelper.GetDataTable("SELECT Date AS 'Дата', Weight AS 'Вес тела (кг)' FROM Progress WHERE UserId=@u ORDER BY Date DESC", new Microsoft.Data.Sqlite.SqliteParameter("@u", userId));
         Controls.Add(grid);
     }
 }
